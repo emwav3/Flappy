@@ -18,7 +18,7 @@ public class Shader
 	private Map<String, Integer> locationCache = new HashMap<String, Integer>();
 	public static Shader BG;
 	
-
+	private boolean enabled = false;
 	public Shader(String vertex, String fragment)
 	{
 		ID = ShaderUtils.load(vertex, fragment);
@@ -42,38 +42,40 @@ public class Shader
 		return result;
 	}
 
-	public void setUniform1i(String name, int value)
-	{
+	public void setUniform1i(String name, int value) {
+		if (!enabled) enable();
 		glUniform1i(getUniform(name), value);
 	}
 	
-	public void setUniform1f(String name, int value)
-	{
+	public void setUniform1f(String name, float value) {
+		if (!enabled) enable();
 		glUniform1f(getUniform(name), value);
 	}
 	
-	public void setUniform2f(String name, int value, float x, float y)
-	{
+	public void setUniform2f(String name, float x, float y) {
+		if (!enabled) enable();
 		glUniform2f(getUniform(name), x, y);
 	}
 	
-	public void setUniform3f(String name, int value, Vector3f vector)
-	{
+	public void setUniform3f(String name, Vector3f vector) {
+		if (!enabled) enable();
 		glUniform3f(getUniform(name), vector.x, vector.y, vector.z);
 	}
-
-	public void setUiformMat4f(String name, Matrix4f matrix)
-	{
+	
+	public void setUniformMat4f(String name, Matrix4f matrix) {
+		if (!enabled) enable();
 		glUniformMatrix4fv(getUniform(name), false, matrix.toFloatBuffer());
 	}
 
 	public void enable()
 	{
 		glUseProgram(ID);
+		enabled = true;
 	}
 
 	public void disable()
 	{
 		glUseProgram(0);
+		enabled = false;
 	}
 }

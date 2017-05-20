@@ -32,7 +32,7 @@ public class Matrix4f
 	
 	public static Matrix4f orthographic(float left, float right, float bottom, float top, float near, float far)
 	{
-		Matrix4f result = new Matrix4f();
+		Matrix4f result = identity();
 		
 		result.elements[0 + 0 * 4] = 2.0f / (right -left);
 		
