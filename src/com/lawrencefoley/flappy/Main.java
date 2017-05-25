@@ -3,6 +3,7 @@ package com.lawrencefoley.flappy;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import org.lwjgl.glfw.GLFWVidMode;
@@ -56,17 +57,19 @@ public class Main implements Runnable
 		
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
-		// Enable v-sync
-		glfwSwapInterval(1);
+		// Enable/disable v-sync
+		glfwSwapInterval(0);
 		// Make the window visible
 		glfwShowWindow(window);
 		
 		GL.createCapabilities();
 		
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
 		glEnable(GL_DEPTH_TEST);
 		glActiveTexture(GL_TEXTURE1);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		System.out.println("OpenGL: " + glGetString(GL_VERSION));
 		Shader.loadAll();
 		
@@ -80,6 +83,13 @@ public class Main implements Runnable
 		
 		Shader.BIRD.setUniformMat4f("pr_matrix", pr_matrix);
 		Shader.BIRD.setUniform1i("tex", 1); // Relates to "GL_TEXTURE1"
+		
+		Shader.PIPE.setUniformMat4f("pr_matrix", pr_matrix);
+		Shader.PIPE.setUniform1i("tex", 1); // Relates to "GL_TEXTURE1"
+		
+		//Shader.FADE.setUniformMat4f("pr_matrix", Matrix4f.orthographic(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		
+		
 		
 	}
 	
@@ -109,7 +119,8 @@ public class Main implements Runnable
 			if(System.currentTimeMillis() - timer > 1000)
 			{
 				timer += 1000;
-				System.out.println(updates + " ups, " + frames + " fps");
+				glfwSetWindowTitle(window, "Flappy - " + frames + " FPS");
+				//System.out.println(updates + " ups, " + frames + " fps");
 				updates = 0;
 				frames = 0;
 			}
@@ -118,6 +129,13 @@ public class Main implements Runnable
 				running = false;
 			}
 		}
+		
+		// Free the window callbacks and destroy the window
+		glfwFreeCallbacks(window);
+		glfwDestroyWindow(window);
+		
+		// Terminate GLFW and free the error callback
+		glfwTerminate();
 	}
 	
 	private void update()
@@ -125,9 +143,14 @@ public class Main implements Runnable
 		glfwPollEvents();
 		if(Input.keys[GLFW_KEY_SPACE])
 		{
-			System.out.println("Flap!");
+			//System.out.println("Flap!");
 		}
 		level.update();
+		
+		if(level.isGameOver())
+		{
+			level = new Level();
+		}
 		
 	}
 	private void render()

@@ -12,4 +12,9 @@ public class Input implements GLFWKeyCallbackI
 	{
 		keys[key] = action != GLFW.GLFW_RELEASE;
 	}
+	
+	public static boolean isKeyDown(int keycode)
+	{
+		return keys[keycode];
+	}
 }

@@ -18,16 +18,17 @@ public class Bird
 
 	private Vector3f position = new Vector3f();
 
-	private float rot;
-	private float yDelta = 0.0f;
-
+	private float rot = 0.0f;
+	private float delta = 0.0f;
+	
+	public boolean alive = true;
 	public Bird()
 	{
 		float[] vertices = new float[] {
-				-SIZE / 2.0f, -SIZE / 2.0f, 0.1f,
-				-SIZE / 2.0f,  SIZE / 2.0f, 0.1f,
-				 SIZE / 2.0f,  SIZE / 2.0f, 0.1f,
-				 SIZE / 2.0f, -SIZE / 2.0f, 0.1f,
+				-SIZE / 2.0f, -SIZE / 2.0f, 0.2f,
+				-SIZE / 2.0f,  SIZE / 2.0f, 0.2f,
+				 SIZE / 2.0f,  SIZE / 2.0f, 0.2f,
+				 SIZE / 2.0f, -SIZE / 2.0f, 0.2f,
 		};
 
 		byte[] indices = new byte[] { 0, 1, 2, 2, 3, 0 };
@@ -44,31 +45,60 @@ public class Bird
 	
 	public void update()
 	{
-		if(Input.keys[GLFW.GLFW_KEY_UP])
+//		if(Input.keys[GLFW.GLFW_KEY_UP])
+//		{
+//			position.y+= 0.1F;
+//		}
+//		if(Input.keys[GLFW.GLFW_KEY_DOWN])
+//		{
+//			position.y-= 0.1F;
+//		}
+//		if(Input.keys[GLFW.GLFW_KEY_LEFT])
+//		{
+//			position.x-= 0.1F;
+//		}
+//		if(Input.keys[GLFW.GLFW_KEY_RIGHT])
+//		{
+//			position.x+= 0.1F;
+//		}
+		
+		position.y -= delta;
+		
+		if(Input.isKeyDown(GLFW.GLFW_KEY_SPACE) && alive)
 		{
-			position.y+= 0.1F;
+			delta = -0.15f;
 		}
-		if(Input.keys[GLFW.GLFW_KEY_DOWN])
+		else
 		{
-			position.y-= 0.1F;
+			delta += 0.01f;
 		}
-		if(Input.keys[GLFW.GLFW_KEY_LEFT])
-		{
-			position.x-= 0.1F;
-		}
-		if(Input.keys[GLFW.GLFW_KEY_RIGHT])
-		{
-			position.x+= 0.1F;
-		}
+		
+		rot = -delta * 90.0f;
+		
+	}
+	
+	public void fall()
+	{
+		delta = -0.15f;
 		
 	}
 	
 	public void render()
 	{
 		Shader.BIRD.enable();
-		Shader.BIRD.setUniformMat4f("ml_matrix", Matrix4f.translate(position));
+		Shader.BIRD.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotate(rot)));
 		texture.bind();
 		mesh.render();
 		Shader.BIRD.disable();
+	}
+	
+	public float getY()
+	{
+		return this.position.y;
+	}
+	
+	public float getSize()
+	{
+		return this.SIZE;
 	}
 }

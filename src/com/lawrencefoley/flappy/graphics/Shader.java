@@ -18,6 +18,8 @@ public class Shader
 	private Map<String, Integer> locationCache = new HashMap<String, Integer>();
 	public static Shader BG;
 	public static Shader BIRD;
+	public static Shader PIPE;
+	public static Shader FADE;
 	
 	private boolean enabled = false;
 	public Shader(String vertex, String fragment)
@@ -29,6 +31,8 @@ public class Shader
 	{
 		BG = new Shader("shaders/bg.vert", "shaders/bg.frag");
 		BIRD = new Shader("shaders/bird.vert", "shaders/bird.frag");
+		PIPE = new Shader("shaders/pipe.vert", "shaders/pipe.frag");
+		FADE = new Shader("shaders/fade.vert", "shaders/fade.frag");
 	}
 	
 	public int getUniform(String name)

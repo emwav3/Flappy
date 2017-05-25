@@ -34,7 +34,7 @@ public class Matrix4f
 	{
 		Matrix4f result = identity();
 		
-		result.elements[0 + 0 * 4] = 2.0f / (right -left);
+		result.elements[0 + 0 * 4] = 2.0f / (right - left);
 		
 		result.elements[1 + 1 * 4] = 2.0f / (top - bottom);
 		
@@ -62,10 +62,10 @@ public class Matrix4f
 	
 	public static Matrix4f rotate(float angle)
 	{
-		Matrix4f result = new Matrix4f();
+		Matrix4f result = identity();
 		float r = (float)Math.toRadians(angle);
-		float cos = (float)Math.cos(angle);
-		float sin = (float)Math.sin(angle);
+		float cos = (float)Math.cos(r);
+		float sin = (float)Math.sin(r);
 		
 		result.elements[0 + 0 * 4] = cos;
 		result.elements[1 + 0 * 4] = sin;
